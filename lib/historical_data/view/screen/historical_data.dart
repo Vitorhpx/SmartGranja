@@ -33,8 +33,6 @@ class HistoricalDataWidget extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: const Text('SmartGranja'),
       ),
       body: Center(
@@ -47,10 +45,6 @@ class HistoricalDataWidget extends StatelessWidget {
               Text(
                 'Temperatura:',
                 style: const TextStyle(fontSize: 24),
-              ),
-              Text(
-                'Sensor 1:',
-                style: const TextStyle(fontSize: 16),
               ),
               FutureBuilder(
                 future: viewModel.allMonitoringData,
