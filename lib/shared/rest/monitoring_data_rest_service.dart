@@ -10,9 +10,10 @@ class MonitoringDataRestService {
 
   Future<List<MonitoringData>> fetchAllMonitoringData() async {
     log('MonitoringDataRestService: fetching monitoring data!');
+    int since = DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch;
     Response response = await _client.get(
-      //Uri.parse(base_url + '?since=1637696037338'),
-      Uri.parse(base_url),
+      Uri.parse(base_url + '?since=$since'),
+      // Uri.parse(base_url),
     );
 
     if (response.statusCode != 200) {

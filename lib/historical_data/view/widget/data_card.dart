@@ -16,7 +16,7 @@ class DataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
       child: Card(
         child: Padding(
           child: Column(
@@ -37,7 +37,8 @@ class DataCard extends StatelessWidget {
           ),
           padding: EdgeInsets.all(16.0),
         )
-      )
+      ),
+      width: double.infinity,
     );
   }
 }

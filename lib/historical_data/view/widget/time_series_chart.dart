@@ -15,9 +15,16 @@ class SimpleTimeSeriesChart extends StatelessWidget {
       [
         new charts.Series<MonitoringData, DateTime>(
           id: 'Data',
-          colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+          colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
           domainFn: (MonitoringData data, _) => data.sampleTime,
           measureFn: (MonitoringData data, _) => data.temperature,
+          data: monitoringDataList,
+        ),
+        new charts.Series<MonitoringData, DateTime>(
+          id: 'Data',
+          colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+          domainFn: (MonitoringData data, _) => data.sampleTime,
+          measureFn: (MonitoringData data, _) => data.humidity,
           data: monitoringDataList,
         )
       ],

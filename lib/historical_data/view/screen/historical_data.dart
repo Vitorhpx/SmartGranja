@@ -13,12 +13,12 @@ class HistoricalDataScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProxyProvider<MonitoringDataModel, HistoricalDataViewModel>(
-        create: (context) =>
-            HistoricalDataViewModel(context.read<MonitoringDataModel>()),
-        update: (context, monitoringDataModel, notifier) =>
-            HistoricalDataViewModel(context.read<MonitoringDataModel>()),
-        child: HistoricalDataWidget(),
-      );
+      create: (context) =>
+          HistoricalDataViewModel(context.read<MonitoringDataModel>()),
+      update: (context, monitoringDataModel, notifier) =>
+          HistoricalDataViewModel(context.read<MonitoringDataModel>()),
+      child: HistoricalDataWidget(),
+    );
   }
 }
 
@@ -28,7 +28,7 @@ class HistoricalDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.select(
-        (HistoricalDataViewModel viewModel) => viewModel,
+      (HistoricalDataViewModel viewModel) => viewModel,
     );
 
     return Scaffold(
@@ -43,53 +43,56 @@ class HistoricalDataWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Temperatura:',
+                'Temperatura e Umidade:',
                 style: const TextStyle(fontSize: 24),
               ),
               FutureBuilder(
-                future: viewModel.allMonitoringData,
-                builder: (context, AsyncSnapshot<List<MonitoringData>> allMonitoringData) {
-                  if (allMonitoringData.hasData) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      child: SimpleTimeSeriesChart(allMonitoringData.data!, animate: false),
+                  future: viewModel.allMonitoringData,
+                  builder: (context,
+                      AsyncSnapshot<List<MonitoringData>> allMonitoringData) {
+                    if (allMonitoringData.hasData) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: SimpleTimeSeriesChart(allMonitoringData.data!,
+                            animate: false),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        BlankSpacer(SpacerSize.large),
+                        SizedBox(
+                          child: CircularProgressIndicator(),
+                          width: 60,
+                          height: 60,
+                        ),
+                      ],
                     );
-                  }
-                  return Column(
+                  }),
+              if (viewModel.latestMonitoringData != null)
+                Container(
+                  child: Row(
                     children: [
-                      BlankSpacer(SpacerSize.large),
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
+                      Expanded(
+                        child: DataCard(
+                          icon: Icons.thermostat,
+                          dataValue: viewModel.latestMonitoringData!.temperature,
+                          dataUnit: '\u{00B0}C',
+                          dataCategory: 'Temperatura',
+                        ),
                       ),
+                      Expanded(
+                        child: DataCard(
+                          icon: Icons.cloud_queue_rounded,
+                          dataValue: viewModel.latestMonitoringData!.humidity,
+                          dataUnit: '%',
+                          dataCategory: 'Umidade',
+                        ),
+                      )
                     ],
-                  );
-                }
-              ),
-              FutureBuilder(
-                future: viewModel.latestMonitoringData,
-                builder: (context, AsyncSnapshot<MonitoringData> latestMonitoringData) {
-                  if (latestMonitoringData.hasData) {
-                    return DataCard(
-                      icon: Icons.thermostat,
-                      dataValue: latestMonitoringData.data!.temperature,
-                      dataUnit: '\u{00B0}C',
-                      dataCategory: 'Temperatura',
-                    );
-                  }
-                  return Column(
-                    children: [
-                      BlankSpacer(SpacerSize.large),
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
-                      ),
-                    ],
-                  );
-                }
-              ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  constraints: BoxConstraints(maxWidth: 320),
+                )
             ],
           ),
         ),

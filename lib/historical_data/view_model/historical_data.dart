@@ -8,5 +8,5 @@ class HistoricalDataViewModel {
 
   Future<List<MonitoringData>> get allMonitoringData => _monitoringDataModel.allMonitoringData;
 
-  Future<MonitoringData> get latestMonitoringData => _monitoringDataModel.latestMonitoringData;
+  MonitoringData? get latestMonitoringData => _monitoringDataModel.latestMonitoringData;
 }
