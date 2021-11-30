@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:smart_granja/shared/model/monitoring_data.dart';
 import 'package:smart_granja/shared/rest/monitoring_data_rest_service.dart';
+import 'dart:developer';
+
 
 final MonitoringDataRestService monitoringDataRestService = GetIt.I<MonitoringDataRestService>();
 
 class MonitoringDataModel extends ChangeNotifier {
   List<MonitoringData> _allMonitoringData = [];
-  late DateTime _lastFetch;
-  static Duration _debounceTime = Duration(seconds: 10);
+  DateTimeRange dateTimeRange = DateTimeRange(start: DateTime.now().subtract(const Duration(days: 3)), end: DateTime.now());
 
-  Future<List<MonitoringData>> get allMonitoringData async {
-    if (_allMonitoringData.isEmpty ||
-        DateTime.now().subtract(_debounceTime).isAfter(_lastFetch)) {
+  Future<List<MonitoringData>> getAllMonitoringData(bool forceRefresh) async {
+    if (_allMonitoringData.isEmpty || forceRefresh) {
       _allMonitoringData =
-          await monitoringDataRestService.fetchAllMonitoringData();
-      _lastFetch = DateTime.now();
+          await monitoringDataRestService.fetchAllMonitoringData(dateTimeRange.start, dateTimeRange.end);
       _allMonitoringData.sort((a, b) => a.sampleTime.compareTo(b.sampleTime));
+      log('data:');
       notifyListeners();
     }
     return _allMonitoringData;
@@ -25,5 +25,10 @@ class MonitoringDataModel extends ChangeNotifier {
 
   MonitoringData? get latestMonitoringData {
     return _allMonitoringData.isNotEmpty ? _allMonitoringData.last : null;
+  }
+
+  set dateRange(DateTimeRange range) {
+    dateTimeRange = range;
+    getAllMonitoringData(true);
   }
 }

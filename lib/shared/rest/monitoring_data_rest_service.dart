@@ -8,12 +8,12 @@ class MonitoringDataRestService {
   static const String base_url = 'https://k8qkg6hx0i.execute-api.us-east-2.amazonaws.com/get-sample-data';
   final _client = http.Client();
 
-  Future<List<MonitoringData>> fetchAllMonitoringData() async {
+  Future<List<MonitoringData>> fetchAllMonitoringData(DateTime start, DateTime end) async {
     log('MonitoringDataRestService: fetching monitoring data!');
-    int since = DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch;
+    int since = start.millisecondsSinceEpoch;
+    int until = end.millisecondsSinceEpoch;
     Response response = await _client.get(
-      Uri.parse(base_url + '?since=$since'),
-      // Uri.parse(base_url),
+      Uri.parse(base_url + '?since=$since&until=$until'),
     );
 
     if (response.statusCode != 200) {
